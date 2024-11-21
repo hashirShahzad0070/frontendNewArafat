@@ -20,7 +20,7 @@ const Welcome = ({ navigation, route }) => {
   // Fetch user name from the token or API
   useEffect(() => {
     if (profileModalVisible && userId) {
-      fetchUserProfile(user);
+      fetchUserProfile(userId);
     }
   }, [profileModalVisible, userId]);
 
