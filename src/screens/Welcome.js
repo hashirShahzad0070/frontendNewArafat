@@ -281,8 +281,8 @@ const styles = StyleSheet.create({
 
   },
   closeButton: {
-    width: 50,
-    height: 50,
+    width: 90,
+    height: 90,
     // borderRadius: 50,
     alignItems:'flex-end',
     position:"absolute",
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     color: '#fff',
-    fontSize: 19,
+    fontSize: 23,
 
   },
   sidebarItem: {

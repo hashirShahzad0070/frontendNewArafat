@@ -30,6 +30,22 @@ const ProfileModal = ({ visible, onClose, data }) => {
               editable={false}
             />
           </View>
+          <View style={styles.fieldRow}>
+            <Text style={styles.label}>Selected Package:</Text>
+            <TextInput
+              style={styles.textBox}
+              value={data?.selectedPackage || ''}
+              editable={false}
+            />
+          </View>
+          <View style={styles.fieldRow}>
+            <Text style={styles.label}>Expiry:</Text>
+            <TextInput
+              style={styles.textBox}
+              value={data?.expiry || ''}
+              editable={false}
+            />
+          </View>
 
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>Close</Text>

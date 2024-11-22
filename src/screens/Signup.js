@@ -50,14 +50,18 @@ const SignupScreen = ({ navigation }) => {
       if (response.data.status === "ok") {
         Alert.alert("Success", response.data.data); // Shows "User created successfully" message from backend
 
+        
+
         // Store the token in AsyncStorage
         const token = response.data.token;
+        const userId =response.data.userId;
+        console.log("user id is:       ", userId);
         if (token) {
           await AsyncStorage.setItem("authToken", token);
           console.log("Token saved to AsyncStorage");
 
           // Navigate to the Welcome screen with the token
-          navigation.navigate("PackageScreen", { token });
+          navigation.navigate("PackageScreen", { userId });
         } else {
           Alert.alert("Error", "Token not received.");
         }

@@ -12,7 +12,10 @@ import {
 import { WebView } from "react-native-webview";
 import { axios } from "../config/axios.config";
 
-const PackageScreen = ({ navigation }) => {
+const PackageScreen = ({ navigation,route }) => {
+  const { userId } = route.params; // Access token and userId here
+  console.log("user id in packageScreen:  ", userId);
+
   const [selectedPackage, setSelectedPackage] = useState(
     "Per 3 months (Most Popular)"
   );
@@ -57,21 +60,57 @@ const PackageScreen = ({ navigation }) => {
 
   const handleWebViewNavigationStateChange = async (newNavState) => {
     const { url } = newNavState;
-
-    console.log(url.includes("success"));
-
-    // Check for PayPal return or cancel URLs
+  
     if (url.includes("success")) {
       setWebViewVisible(false);
       Alert.alert("Success", "Payment completed successfully!");
-      navigation.navigate("LoginScreen");
+  
+      try {
+        const selectedPkg = packages.find((pkg) => pkg.name === selectedPackage);
+  
+        let expiryDate;
+        let packageType;
+        const currentDate = new Date();
+  
+        if (selectedPkg.name === "Per month") {
+          expiryDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
+          packageType= "Monthly";
+        } else if (selectedPkg.name === "Per 3 months (Most Popular)") {
+          expiryDate = new Date(currentDate.setMonth(currentDate.getMonth() + 3));
+          packageType= "3 Months";
+
+        } else if (selectedPkg.name === "Per year") {
+          expiryDate = new Date(currentDate.setFullYear(currentDate.getFullYear() + 1));
+          packageType= "Yearly";
+
+
+        } else if (selectedPkg.name === "One time") {
+          expiryDate = 'No Expiry'; 
+          packageType= "One Time";
+
+        }
+  
+        const response = await axios.post("update-package", {
+          userId: userId, // Replace with the actual user ID
+          selectedPackage: packageType,
+          expiry: expiryDate.toLocaleDateString(), 
+        });
+  
+        if (response.status === 200) {
+          Alert.alert("Package Updated", `Your package has been updated to ${selectedPkg.name}.`);
+          navigation.navigate("LoginScreen");
+        }
+      } catch (error) {
+        console.error("Error updating package:", error);
+        Alert.alert("Error", "An error occurred while updating your package.");
+      }
     } else if (url.includes("cancel")) {
       setWebViewVisible(false);
       Alert.alert("Canceled", "Payment process was canceled.");
     }
   };
+  
 
-  // Helper function to extract orderId from the return_url (if included in query params)
   const extractOrderId = (url) => {
     const urlParams = new URLSearchParams(new URL(url).search);
     return urlParams.get("orderId"); // Adjust key if necessary
