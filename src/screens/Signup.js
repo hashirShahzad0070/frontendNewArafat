@@ -14,10 +14,8 @@ import {
   View,
 } from "react-native";
 import emailIcon from "../assets/images/email.png";
-import {
-  default as hideIcon,
-  default as showIcon,
-} from "../assets/images/Hide.png";
+import hideIcon from "../assets/images/Hide.png";
+import showIcon from "../assets/images/show.png";
 import loginBot from "../assets/images/LoginBot.png";
 import nameIcon from "../assets/images/name.png";
 import passwordIcon from "../assets/images/password.png";
@@ -138,7 +136,7 @@ const SignupScreen = ({ navigation }) => {
               />
               <TouchableOpacity onPress={togglePasswordVisibility}>
                 <Image
-                  source={isPasswordVisible ? showIcon : hideIcon}
+                  source={isPasswordVisible ? hideIcon : showIcon}
                   style={styles.icon}
                 />
               </TouchableOpacity>

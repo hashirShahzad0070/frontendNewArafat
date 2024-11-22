@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, Dimensions, Alert, Modal } from 'react-native';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
+import { useFocusEffect } from '@react-navigation/native'; // to handle screen focus/unfocus
 import start from '../assets/images/start.png';
 import pause from '../assets/images/pause.png';
 import typeImg from '../assets/images/typeImg.png';
 import background from '../assets/images/background.png';
 
-const Type1Screen = ({ navigation }) => {
-  const [sidebarVisible, setSidebarVisible] = useState(false);
+const Type2Screen = ({ navigation }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [sound, setSound] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const sidebarAnim = useState(new Animated.Value(-Dimensions.get('window').width))[0];
   const screenWidth = Dimensions.get('window').width;
 
@@ -21,6 +20,7 @@ const Type1Screen = ({ navigation }) => {
       const newSound = new Audio.Sound();
       try {
         await newSound.loadAsync(require('../../src/assets/audios/updown.mp3')); // Adjust path if necessary
+        await newSound.setIsLoopingAsync(true);  // Set the audio to loop
         setSound(newSound);
       } catch (error) {
         console.error('Error loading sound:', error);
@@ -64,36 +64,26 @@ const Type1Screen = ({ navigation }) => {
     }
   };
 
-  // Sidebar toggle functionality
-  const toggleSidebar = () => {
-    setSidebarVisible(!sidebarVisible);
-    Animated.timing(sidebarAnim, {
-      toValue: sidebarVisible ? -screenWidth : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  // Swipe gesture for sidebar
-  const handleGesture = Animated.event(
-    [{ nativeEvent: { translationX: sidebarAnim } }],
-    { useNativeDriver: true }
+  // Pause audio when navigating away from the screen
+  useFocusEffect(
+    React.useCallback(() => {
+      // Pause the audio when the screen loses focus
+      return () => {
+        if (sound && isPlaying) {
+          sound.pauseAsync();
+          setIsPlaying(false);
+        }
+      };
+    }, [sound, isPlaying])
   );
 
-  const handleGestureEnd = (event) => {
-    if (event.nativeEvent.translationX < -screenWidth * 0.3) {
-      setSidebarVisible(false);
-      Animated.timing(sidebarAnim, {
-        toValue: -screenWidth,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.spring(sidebarAnim, {
-        toValue: 0,
-        useNativeDriver: true,
-      }).start();
+  // Pause the audio when the Type button is pressed
+  const handleTypeBtnPress = () => {
+    if (sound && isPlaying) {
+      sound.pauseAsync();
+      setIsPlaying(false);
     }
+    setModalVisible(true);
   };
 
   return (
@@ -115,46 +105,13 @@ const Type1Screen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.TypeBtn} onPress={() => setModalVisible(true)}>
+      <TouchableOpacity style={styles.TypeBtn} onPress={handleTypeBtnPress}>
         <Image source={typeImg} style={styles.TypeBtnImage} />
       </TouchableOpacity>
-      
+
       <Text style={styles.subtitle}>Max 1 High intensity set/exercise</Text>
 
-      {/* <TouchableOpacity style={styles.toggleButton} onPress={toggleSidebar}>
-        <Text style={styles.toggleButtonText}>≡</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.profileButton}>
-        <Text style={styles.profileButtonText}>ALGOPAN</Text>
-      </TouchableOpacity> */}
-
-      {sidebarVisible && (
-        <PanGestureHandler
-          onGestureEvent={handleGesture}
-          onHandlerStateChange={({ nativeEvent }) => {
-            if (nativeEvent.state === State.END) {
-              handleGestureEnd(nativeEvent);
-            }
-          }}
-        >
-          <Animated.View style={styles.sidebar}>
-            <View style={styles.sidebarHeader}>
-              <Text style={styles.sidebarTitle}>Menu</Text>
-              <TouchableOpacity onPress={toggleSidebar} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>✕</Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity onPress={() => navigation.navigate('SomeScreen')}>
-              <Text style={styles.sidebarItem}>Option 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('AnotherScreen')}>
-              <Text style={styles.sidebarItem}>Option 2</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </PanGestureHandler>
-      )}
-
+      {/* Modal for Type Selection */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -194,6 +151,7 @@ const Type1Screen = ({ navigation }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -202,16 +160,12 @@ const styles = StyleSheet.create({
     padding: 0,
     backgroundColor: '#36373B',
   },
-  backgroundImage:{
-    width:450,
-    height:650,
-
-
+  backgroundImage: {
+    width: 450,
+    height: '80%',
   },
-
-  
   nav: {
-    height: 120,
+    height: 130,
     width: '100%',
     backgroundColor: '#25262A',
     position: 'absolute',
@@ -221,18 +175,17 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   title: {
-    fontSize: 24,
-    // fontWeight: 'bold',
-    marginTop: 75,
+    fontSize: 30,
+    marginTop: 80,
     textAlign: 'center',
-    color: '#fff'
+    color: '#fff',
   },
   titleType: {
     fontSize: 44,
     fontWeight: 'bold',
-    marginTop: 50,
+    marginTop: 70,
     textAlign: 'center',
-    color: '#FFD700'
+    color: '#80C4E9',
   },
   subtitle: {
     fontSize: 20,
@@ -246,7 +199,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     left: 40,
-    // backgroundColor: '#36373B',
     paddingBottom: 10,
     alignItems: 'left',
     width: '50%',
@@ -254,7 +206,6 @@ const styles = StyleSheet.create({
   pauseBtn: {
     width: 150,
     height: 70,
-    padding: 0,
     marginTop: 30,
     justifyContent: 'center',
     alignItems: 'center',
@@ -267,7 +218,6 @@ const styles = StyleSheet.create({
   startBtn: {
     width: 150,
     height: 70,
-    padding: 0,
     marginTop: 30,
     justifyContent: 'center',
     alignItems: 'center',
@@ -282,7 +232,6 @@ const styles = StyleSheet.create({
     right: 30,
     width: 150,
     height: 70,
-    padding: 0,
     marginTop: 30,
     justifyContent: 'center',
     alignItems: 'center',
@@ -291,72 +240,6 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     resizeMode: 'contain',
-  },
-  toggleButton: {
-    position: 'absolute',
-    bottom: 30,
-    left: 20,
-    backgroundColor: '#25262A',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  profileButton: {
-    position: 'absolute',
-    bottom: 30,
-    right: 20,
-    backgroundColor: '#25262A',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  profileButtonText: {
-    color: '#FFFFFF',
-    fontSize: 8,
-  },
-  toggleButtonText: {
-    color: '#FFFFFF',
-    fontSize: 24,
-  },
-  sidebar: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    width: Dimensions.get('window').width * 0.7,
-    backgroundColor: '#25262A',
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    zIndex: 2,
-  },
-  sidebarHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  sidebarTitle: {
-    fontSize: 24,
-    marginTop: 40,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  closeButton: {
-    padding: 5,
-    marginTop: 40,
-  },
-  closeButtonText: {
-    fontSize: 24,
-    color: '#FFFFFF',
-  },
-  sidebarItem: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    marginVertical: 10,
   },
   modalOverlay: {
     flex: 1,
@@ -399,4 +282,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Type1Screen;
+export default Type2Screen;

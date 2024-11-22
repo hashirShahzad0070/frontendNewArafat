@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import emailIcon from "../assets/images/email.png";
 import hideIcon from "../assets/images/Hide.png";
-import showIcon from "../assets/images/Hide.png";
+import showIcon from "../assets/images/show.png";
 import loginBot from "../assets/images/LoginBot.png";
 import passwordIcon from "../assets/images/password.png";
 import { axios } from "../config/axios.config"; // Ensure axios is configured
@@ -111,7 +111,7 @@ const LoginScreen = ({ navigation }) => {
               />
               <TouchableOpacity onPress={togglePasswordVisibility}>
                 <Image
-                  source={isPasswordVisible ? showIcon : hideIcon}
+                  source={isPasswordVisible ? hideIcon : showIcon}
                   style={styles.icon}
                 />
               </TouchableOpacity>

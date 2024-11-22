@@ -1,56 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, Dimensions, Modal } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Animated,
+  Dimensions,
+  Modal,
+  Alert,
+} from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import chatBot from '../assets/images/Chat-bot.png';
 import start from '../assets/images/start.png';
-import ProfileModal from '../components/profileModal'; // Import the ProfileModal component
-import { axios } from "../config/axios.config"; // Ensure axios is configured
-
+import ProfileModal from '../components/profileModal';
+import { axios } from '../config/axios.config';
 
 const Welcome = ({ navigation, route }) => {
   const { token, userId } = route.params;
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // Modal visibility for type selection
-  const [profileModalVisible, setProfileModalVisible] = useState(false); // Profile Modal visibility
-  const [profile, setProfile] = useState(null); // State to hold the profile data
+  const [modalVisible, setModalVisible] = useState(false);
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
+  const [profile, setProfile] = useState(null);
 
   const sidebarAnim = useState(new Animated.Value(-Dimensions.get('window').width))[0];
   const screenWidth = Dimensions.get('window').width;
 
-  // Fetch user name from the token or API
   useEffect(() => {
     if (profileModalVisible && userId) {
-      fetchUserProfile(user);
+      fetchUserProfile(userId);
     }
   }, [profileModalVisible, userId]);
 
-
-  // Fetch user profile data from the API
   const fetchUserProfile = async (id) => {
     try {
-      // // Fetch user profile without the Authorization header
-      // const response = await fetch(`http://192.168.18.5:5000/user/${id}`, {
-      //   method: "GET",
-      // });
-      console.log(id);
       const response = await axios.get(`user/${id}`);
-      console.log(response);
-
       const data = await response.data;
-      console.log(data);
-  
-      if (data.status === "success") {
-        console.log("API success");
+
+      if (data.status === 'success') {
         setProfile(data);
       } else {
-        Alert.alert("Error", "Failed to fetch user profile");
+        Alert.alert('Error', 'Failed to fetch user profile');
       }
     } catch (error) {
-      console.error("Error fetching user profile:", error);
-      Alert.alert("Error", "An error occurred while fetching profile");
+      console.error('Error fetching user profile:', error);
+      Alert.alert('Error', 'An error occurred while fetching profile');
     }
   };
-  
+
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
     Animated.timing(sidebarAnim, {
@@ -87,44 +84,33 @@ const Welcome = ({ navigation, route }) => {
         <Text style={styles.title}>QUANTUM REP</Text>
       </View>
 
-      <Image
-        source={chatBot}
-        style={styles.image}
-      />
+      <Image source={chatBot} style={styles.image} accessible accessibilityLabel="Chatbot Illustration" />
 
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-
-      {/* Start Button opens Modal */}
-      <TouchableOpacity 
-        style={styles.buttonContainer} 
-        onPress={() => setModalVisible(true)} // Open modal on press
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={() => setModalVisible(true)}
+        accessible
+        accessibilityLabel="Start Experience"
       >
-        <Image
-          source={start}
-          style={styles.startBtn}
-        />
+        <Image source={start} style={styles.startBtn} />
       </TouchableOpacity>
 
-      <Text style={styles.subtitle}>Experience unique, unpredictable sessions that boost intensity, delivering fast and impressive results</Text>
+      <Text style={styles.subtitle}>
+        Experience unique, unpredictable sessions that boost intensity, delivering fast and impressive results
+      </Text>
 
-      <TouchableOpacity 
-        style={styles.toggleButton} 
-        onPress={toggleSidebar} 
-      >
+      <TouchableOpacity style={styles.toggleButton} onPress={toggleSidebar} accessible accessibilityLabel="Toggle Sidebar">
         <Text style={styles.toggleButtonText}>≡</Text>
       </TouchableOpacity>
 
-      {/* Profile Button triggers Profile Modal */}
-
-      
-     
-      <TouchableOpacity 
-        style={styles.profileButton} 
-        onPress={() => setProfileModalVisible(true)} // Open Profile Modal on press
+      <TouchableOpacity
+        style={styles.profileButton}
+        onPress={() => setProfileModalVisible(true)}
+        accessible
+        accessibilityLabel="Open Profile"
       >
         <Text style={styles.profileButtonText}>ALGOPAN</Text>
       </TouchableOpacity>
-      
 
       {sidebarVisible && (
         <PanGestureHandler
@@ -135,10 +121,10 @@ const Welcome = ({ navigation, route }) => {
             }
           }}
         >
-          <Animated.View style={styles.sidebar}>
+          <Animated.View style={[styles.sidebar, { transform: [{ translateX: sidebarAnim }] }]}>
             <View style={styles.sidebarHeader}>
-            <Text style={styles.sidebarTitle}>Hi, {profile?.data?.name}</Text>
-            <TouchableOpacity onPress={toggleSidebar} style={styles.closeButton}>
+              <Text style={styles.sidebarTitle}>Hi, {profile?.data?.name}</Text>
+              <TouchableOpacity onPress={toggleSidebar} style={styles.closeButton} accessible accessibilityLabel="Close Sidebar">
                 <Text style={styles.closeButtonText}>✕</Text>
               </TouchableOpacity>
             </View>
@@ -149,13 +135,7 @@ const Welcome = ({ navigation, route }) => {
         </PanGestureHandler>
       )}
 
-      {/* Modal for Type Selection */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
+      <Modal animationType="slide" transparent visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Choose a Type</Text>
@@ -163,7 +143,7 @@ const Welcome = ({ navigation, route }) => {
               style={styles.modalButton}
               onPress={() => {
                 setModalVisible(false);
-                navigation.navigate('Type1Screen'); // Navigate to Type1Screen
+                navigation.navigate('Type1Screen');
               }}
             >
               <Text style={styles.modalButtonText}>Type 1</Text>
@@ -172,32 +152,25 @@ const Welcome = ({ navigation, route }) => {
               style={styles.modalButton}
               onPress={() => {
                 setModalVisible(false);
-                navigation.navigate('Type2Screen'); // Navigate to Type2Screen
+                navigation.navigate('Type2Screen');
               }}
             >
               <Text style={styles.modalButtonText}>Type 2</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={() => setModalVisible(false)}
-            >
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setModalVisible(false)}>
               <Text style={styles.modalCloseButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* Profile Modal to show user details */}
-      
       <ProfileModal
-  visible={profileModalVisible} // Pass the profileModalVisible state as visible
-  onClose={() => setProfileModalVisible(false)} // Close the profile modal when onClose is called
-  data={profile?.data} // Pass the user data to the ProfileModal
-/>
+        visible={profileModalVisible}
+        onClose={() => setProfileModalVisible(false)}
+        data={profile?.data}
+      />
 
-       <Text style={styles.signupText3}>
-            Powered By | BG IT Solutions
-              </Text>
+      <Text style={styles.signupText3}>Powered By | BG IT Solutions</Text>
     </View>
   );
 };
@@ -207,7 +180,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 0,
     backgroundColor: '#36373B',
   },
   nav: {
@@ -216,53 +188,40 @@ const styles = StyleSheet.create({
     backgroundColor: '#25262A',
     position: 'absolute',
     top: 0,
-    left: 0,
-    right: 0,
     zIndex: 1,
   },
   title: {
     fontSize: 30,
     marginTop: 80,
     textAlign: 'center',
-    color: '#fff'
+    color: '#fff',
   },
   subtitle: {
     fontSize: 14,
-    marginBottom: 60,
     textAlign: 'center',
     color: '#DDDDDD',
-    marginTop: 10,
+    marginVertical: 10,
   },
-  signupText3:{
-    color:"#fff",
-    // marginTop:60,
-    position:"absolute",
-    bottom:40,
-    fontSize: 19,
-    fontWeight:500,
-  
-},
+  signupText3: {
+    color: '#fff',
+    position: 'absolute',
+    bottom: 40,
+    fontSize: 14,
+    textAlign: 'center',
+  },
   image: {
-    width: 415, 
-    height: 435, 
-    marginBottom: 0,
-    marginTop:40,
+    width: '90%',
+    height: undefined,
+    aspectRatio: 1,
+    marginVertical: 20,
   },
   startBtn: {
     width: 190,
     height: 90,
-    marginTop: -90,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
   },
   buttonContainer: {
-    backgroundColor: '#36373B',
-    paddingBottom: 0,
     alignItems: 'center',
-    width: '50%',
+    marginBottom: 10,
   },
   toggleButton: {
     position: 'absolute',
@@ -275,7 +234,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  profileButton:{
+  profileButton: {
     position: 'absolute',
     bottom: 80,
     right: 20,
@@ -286,7 +245,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  profileButtonText:{
+  profileButtonText: {
     color: '#FFFFFF',
     fontSize: 8,
   },

@@ -3,156 +3,155 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'#36373B',
+    backgroundColor: '#36373B',
   },
 
-  DetailWrapper:{
+  DetailWrapper: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 25,
+    paddingHorizontal: 25,
+    paddingVertical: 20,
     backgroundColor: '#ffffff',
-    borderRadius:'30'
-
+    borderRadius: 30,
   },
 
-  imgwrapper:{
-    width:'100%',
-    alignItems:'center',
-    
+  imgwrapper: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 20,
   },
 
-  signupText2:{
-    marginTop:90,
+  signupText2: {
+    marginTop:80,
+     // Adjusted for better spacing
     fontSize: 19,
-    fontWeight:500,
-
-    
+    fontWeight: '500',
+    textAlign: 'center',
   },
-  signupText3:{
-    marginTop:60,
+
+  signupText3: {
+    marginTop:80,
     fontSize: 19,
-    fontWeight:500,
-  
-},
+    fontWeight: '500',
+    textAlign: 'center',
+  },
 
-  bgImage:{
-    width:'100%',
-    alignItems:'center'
-
+  bgImage: {
+    width: '100%',
+    alignItems: 'center',
   },
 
   image: {
-    width: 208, 
-    height: 208, // Adjust the height based on your design
-    marginBottom: 15,
-    marginTop: 50,
-
-    
+    width: '50%', // Dynamically scale the image
+    height: undefined,
+    aspectRatio: 1, // Maintain aspect ratio
+    marginBottom: 0,
+    marginTop: 30,
   },
+
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 50,
+    marginBottom: 20,
     color: '#36373B', // Title color
+    textAlign: 'center',
   },
 
   titleSignup: {
     fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 25,
-    color: '#36373B', // Title color
+    marginBottom: 20,
+    color: '#36373B',
+    textAlign: 'center',
   },
+
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    height:58,
+    height: 56,
     width: '100%',
     borderWidth: 0.5,
     borderColor: '#ccc',
     borderRadius: 20,
-    marginBottom: 15,
     paddingHorizontal: 10,
-    backgroundColor:'#F1F4F9',
-    marginTop:5,
+    backgroundColor: '#F1F4F9',
+    marginBottom: 15,
   },
+
   icon: {
-    width: 29,  // Adjust size as needed
-    height: 24, // Adjust size as needed
-    marginRight: 10, // Space between icon and input
-  },
-  iconName:{
-    width:25,
+    width: 24,
+    height: 24,
     marginRight: 10,
   },
-  input: {
-    flex: 1, // Take up the remaining space
-    height: 50,
-    paddingLeft: 5,
-    fontSize:18, // Optional padding
+
+  iconName: {
+    width: 25,
+    marginRight: 10,
   },
+
+  input: {
+    flex: 1,
+    height: '100%',
+    fontSize: 18,
+    color: '#000',
+  },
+
   rememberContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
+    marginBottom: 15,
   },
+
   rememberText: {
     fontSize: 16,
   },
+
   loginButton: {
     backgroundColor: '#36373B',
-    padding: 15,
-    height:56,
+    paddingVertical: 15,
     borderRadius: 20,
     width: '100%',
     alignItems: 'center',
-    marginTop: 25,
+    marginTop: 15,
   },
+
   loginButtonText: {
     color: 'white',
-    fontSize: 22,
-    fontWeight:500,
+    fontSize: 18,
+    fontWeight: '500',
   },
+
   orText: {
     marginVertical: 10,
     fontSize: 16,
+    textAlign: 'center',
   },
+
   socialContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     width: '100%',
     marginTop: 10,
-    
   },
+
   socialButton: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
+    width: 50, // Adjusted for better UI scaling
+    height: 50,
+    borderRadius: 25, // Circular button
+    backgroundColor: '#ccc',
     alignItems: 'center',
-    width: '30%',
-    
+    justifyContent: 'center',
   },
+
   signupText: {
-    marginTop: 30,
+    marginTop: 15,
     fontSize: 16,
+    textAlign: 'center',
   },
 
-  socialContainer:{
-    display: 'flex',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    width:'80%',
-    marginTop: 10,
-
-  },
-  
-
-  socialButton:{
-    width:30,
-    height:30,
-  },
   signupLink: {
     color: '#36373B',
     fontWeight: 'bold',
