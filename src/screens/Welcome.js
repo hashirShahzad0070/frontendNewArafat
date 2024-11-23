@@ -78,14 +78,18 @@ const Welcome = ({ navigation, route }) => {
     }
   };
 
+
+
+
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
         <Text style={styles.title}>QUANTUM REP</Text>
       </View>
+      <View style={styles.contentWrapper}>
+
 
       <Image source={chatBot} style={styles.image} accessible accessibilityLabel="Chatbot Illustration" />
-
       <TouchableOpacity
         style={styles.buttonContainer}
         onPress={() => setModalVisible(true)}
@@ -98,10 +102,13 @@ const Welcome = ({ navigation, route }) => {
       <Text style={styles.subtitle}>
         Experience unique, unpredictable sessions that boost intensity, delivering fast and impressive results
       </Text>
+      </View>
+
 
       <TouchableOpacity style={styles.toggleButton} onPress={toggleSidebar} accessible accessibilityLabel="Toggle Sidebar">
         <Text style={styles.toggleButtonText}>≡</Text>
       </TouchableOpacity>
+
 
       <TouchableOpacity
         style={styles.profileButton}
@@ -181,6 +188,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#36373B',
+
   },
   nav: {
     height: 140,
@@ -189,6 +197,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     zIndex: 1,
+  },
+  contentWrapper:{
+    marginTop:50,
+
   },
   title: {
     fontSize: 30,
@@ -205,7 +217,7 @@ const styles = StyleSheet.create({
   signupText3: {
     color: '#fff',
     position: 'absolute',
-    bottom: 40,
+    bottom: 30,
     fontSize: 14,
     textAlign: 'center',
   },
@@ -213,7 +225,7 @@ const styles = StyleSheet.create({
     width: '90%',
     height: undefined,
     aspectRatio: 1,
-    marginVertical: 20,
+    marginVertical: 0,
   },
   startBtn: {
     width: 190,
@@ -225,7 +237,7 @@ const styles = StyleSheet.create({
   },
   toggleButton: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 50,
     left: 20,
     backgroundColor: '#25262A',
     width: 50,
@@ -236,7 +248,7 @@ const styles = StyleSheet.create({
   },
   profileButton: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 50,
     right: 20,
     backgroundColor: '#25262A',
     width: 50,

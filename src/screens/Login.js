@@ -37,34 +37,45 @@ const LoginScreen = ({ navigation }) => {
       Alert.alert("Error", "Please fill all the fields!");
       return;
     }
-
+  
     try {
+      console.log('Email:', email, 'Password:', password);
       const response = await axios.post("login", {
         email,
         password,
       });
-
+      console.log('Full response:', response.data);
+  
       if (response.data.status === "ok") {
         Alert.alert("Success", "Login successful!");
-
-        const { token, userId } = response.data; // Extract token and userId from response
-
-        // Save the token in AsyncStorage for future API calls
+      
+        const { token, userId } = response.data; 
+      
         await AsyncStorage.setItem("authToken", token);
-
-        // Navigate to the Welcome screen and pass the token and userId as parameters
         navigation.navigate("Welcome", { token, userId });
-      } else {
-        Alert.alert("Error", response.data.data || "Login failed");
+      }
+      else if (response.data.status === "error3") {
+        const { data, userId, token } = response.data; 
+
+        await AsyncStorage.setItem("authToken", token);
+        console.log("error3: Token saved to AsyncStorage");
+
+        Alert.alert("Error", data);
+        navigation.navigate("PackageScreen", {userId});
+      } 
+      else {
+        Alert.alert("Error", response.data.data);
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Exception during login:", error);
       Alert.alert(
         "Error",
-        "An error occurred. Please check your network and try again."
+        "Unexpected Error! Please Try Again."
       );
     }
   };
+  
+    
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
